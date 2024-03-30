@@ -10,12 +10,13 @@ using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.IO;
 using System.Net.Http;
+using AESEncryption.Model;
+using System.Diagnostics;
 
 namespace AESEncryption
 {
     public partial class Form1 : Form
     {
-        private static byte[] IV = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public Form1()
         {
             InitializeComponent();
@@ -30,7 +31,9 @@ namespace AESEncryption
         {
             try
             {
-                textBoxEncryptedOutput.Text = Encrypt(textBoxInput.Text, textBoxEncryptPassword.Text, IV);
+                var data = Encrypt(textBoxInput.Text, textBoxEncryptPassword.Text);
+                textBoxEncryptedOutput.Text = data.StringEncryptOrDecrypt;
+                textTimeEncrypt.Text = data.DecrypEncryptTime.ToString("0.#############");
             }
             catch (Exception ex)
             {
@@ -42,7 +45,9 @@ namespace AESEncryption
         {
             try
             {
-                textBoxDecryptOutput.Text = Decrypt(textBoxEncrypted.Text, textBoxDcryptPassword.Text, IV);
+                var data = Decrypt(textBoxEncrypted.Text, textBoxDcryptPassword.Text);
+                textBoxDecryptOutput.Text = data.StringEncryptOrDecrypt;
+                textTimeDecrypt.Text = data.DecrypEncryptTime.ToString("0.#############");
             }
             catch (Exception ex)
             {
@@ -60,6 +65,7 @@ namespace AESEncryption
         {
             textBoxInput.Enabled = textBoxInput.Text.Length > 0;
             buttonEncrypt.Enabled = textBoxInput.Text.Length > 0;
+
         }
 
         private void textBoxEncrypted_TextChanged(object sender, EventArgs e)
@@ -74,46 +80,26 @@ namespace AESEncryption
             buttonDecrypt.Enabled = textBoxEncrypted.Text.Length > 0;
         }
 
-        private string Encrypt(string plainText, string Password, byte[] IV)
+        private DataEncryptionProvider Encrypt(string plainText, string Password)
         {
-            byte[] Key = Encoding.UTF8.GetBytes(Password);
+            Stopwatch stopwatch = new Stopwatch();
 
-            // Create a new AesManaged.    
-            AesManaged aes = new AesManaged();
-            aes.Key = Key;
-            aes.IV = IV;
-
-            MemoryStream memoryStream = new MemoryStream();
-            CryptoStream cryptoStream = new CryptoStream(memoryStream, aes.CreateEncryptor(), CryptoStreamMode.Write);
-
-            byte[] InputBytes = Encoding.UTF8.GetBytes(plainText);
-            cryptoStream.Write(InputBytes, 0, InputBytes.Length);
-            cryptoStream.FlushFinalBlock();
-
-            byte[] Encrypted = memoryStream.ToArray();
-            // Return encrypted data    
-            return Convert.ToBase64String(Encrypted);
+            stopwatch.Start();
+            string encryptString = Convert.ToBase64String(AES.Encrypt(plainText, Password));
+            stopwatch.Stop();
+            double encryptionTime = stopwatch.Elapsed.TotalSeconds;
+            return new DataEncryptionProvider(encryptString, encryptionTime);
         }
 
-        private string Decrypt(string plaintext, string Password, byte[] IV)
+        private DataEncryptionProvider Decrypt(string plaintext, string Password)
         {
-            byte[] Key = Encoding.UTF8.GetBytes(Password);
+            Stopwatch stopwatch = new Stopwatch();
 
-            // Create a new AesManaged.    
-            AesManaged aes = new AesManaged();
-            aes.Key = Key;
-            aes.IV = IV;
-
-            MemoryStream memoryStream = new MemoryStream();
-            CryptoStream cryptoStream = new CryptoStream(memoryStream, aes.CreateDecryptor(), CryptoStreamMode.Write);
-
-            byte[] InputBytes = Convert.FromBase64String(plaintext);
-            cryptoStream.Write(InputBytes, 0, InputBytes.Length);
-            cryptoStream.FlushFinalBlock();
-
-            byte[] Decrypted = memoryStream.ToArray();
-            // Return encrypted data    
-            return UTF8Encoding.UTF8.GetString(Decrypted, 0, Decrypted.Length);
+            stopwatch.Start();
+            string decryptString = AES.Decrypt(Convert.FromBase64String(plaintext), Password);
+            stopwatch.Stop();
+            double decryptionTime = stopwatch.Elapsed.TotalSeconds;
+            return new DataEncryptionProvider(decryptString, decryptionTime);
         }
 
         private void textBoxEncryptPassword_Leave(object sender, EventArgs e)
@@ -257,6 +243,16 @@ namespace AESEncryption
         }
 
         private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxEncryptedOutput_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }
