@@ -239,7 +239,7 @@ namespace AESEncryption
             textBoxDcryptPassword.Size = new System.Drawing.Size(390, 27);
             textBoxDcryptPassword.TabIndex = 3;
             textBoxDcryptPassword.TextChanged += textBoxDcryptPassword_TextChanged;
-            textBoxDcryptPassword.MouseDoubleClick += textBoxDcryptPassword_MouseDoubleClick;
+            //textBoxDcryptPassword.MouseDoubleClick += textBoxDcryptPassword_MouseDoubleClick;
             // 
             // label4
             // 
@@ -259,7 +259,7 @@ namespace AESEncryption
             textBoxEncrypted.Size = new System.Drawing.Size(523, 27);
             textBoxEncrypted.TabIndex = 0;
             textBoxEncrypted.TextChanged += textBoxEncrypted_TextChanged;
-            textBoxEncrypted.MouseDoubleClick += textBoxEncrypted_MouseDoubleClick;
+            //textBoxEncrypted.MouseDoubleClick += textBoxEncrypted_MouseDoubleClick;
             // 
             // buttonDecrypt
             // 
@@ -303,7 +303,7 @@ namespace AESEncryption
             textBoxEncryptedOutput.Size = new System.Drawing.Size(521, 27);
             textBoxEncryptedOutput.TabIndex = 9;
             textBoxEncryptedOutput.TextChanged += textBoxEncryptedOutput_TextChanged;
-            textBoxEncryptedOutput.MouseDoubleClick += textBoxEncryptedOutput_MouseDoubleClick;
+            //textBoxEncryptedOutput.MouseDoubleClick += textBoxEncryptedOutput_MouseDoubleClick;
             // 
             // label6
             // 

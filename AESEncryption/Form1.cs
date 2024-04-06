@@ -84,31 +84,14 @@ namespace AESEncryption
         {
             Stopwatch stopwatch = new Stopwatch();
             var keySize = int.Parse(cbAesKeySize.Text);
-            if (keySize == 128)
-            {
+            
 
-                stopwatch.Start();
-                string encryptString = Convert.ToBase64String(AES128.Encrypt(plainText, Password));
-                stopwatch.Stop();
-                double encryptionTime = stopwatch.Elapsed.TotalSeconds;
-                return new DataEncryptionProvider(encryptString, encryptionTime);
-            }
-            else if (keySize == 192)
-            {
-                stopwatch.Start();
-                string encryptString = Convert.ToBase64String(AES192.Encrypt(plainText, Password));
-                stopwatch.Stop();
-                double encryptionTime = stopwatch.Elapsed.TotalSeconds;
-                return new DataEncryptionProvider(encryptString, encryptionTime);
-            }
-            else
-            {
-                stopwatch.Start();
-                string encryptString = Convert.ToBase64String(AES256.Encrypt(plainText, Password));
-                stopwatch.Stop();
-                double encryptionTime = stopwatch.Elapsed.TotalSeconds;
-                return new DataEncryptionProvider(encryptString, encryptionTime);
-            }
+            stopwatch.Start();
+            string encryptString = Convert.ToBase64String(AES128.Encrypt(plainText, Password));
+            stopwatch.Stop();
+            double encryptionTime = stopwatch.Elapsed.TotalSeconds;
+            return new DataEncryptionProvider(encryptString, encryptionTime);
+            
         }
 
         private DataEncryptionProvider Decrypt(string plaintext, string Password)
@@ -116,30 +99,12 @@ namespace AESEncryption
             Stopwatch stopwatch = new Stopwatch();
 
             var keySize = int.Parse(cbAesKeySize.Text);
-            if (keySize == 128)
-            {
-                stopwatch.Start();
-                string decryptString = AES128.Decrypt(Convert.FromBase64String(plaintext), Password);
-                stopwatch.Stop();
-                double decryptionTime = stopwatch.Elapsed.TotalSeconds;
-                return new DataEncryptionProvider(decryptString, decryptionTime);
-            }
-            else if (keySize == 192)
-            {
-                stopwatch.Start();
-                string decryptString = AES192.Decrypt(Convert.FromBase64String(plaintext), Password);
-                stopwatch.Stop();
-                double decryptionTime = stopwatch.Elapsed.TotalSeconds;
-                return new DataEncryptionProvider(decryptString, decryptionTime);
-            }
-            else
-            {
-                stopwatch.Start();
-                string decryptString = AES256.Decrypt(Convert.FromBase64String(plaintext), Password);
-                stopwatch.Stop();
-                double decryptionTime = stopwatch.Elapsed.TotalSeconds;
-                return new DataEncryptionProvider(decryptString, decryptionTime);
-            }
+           
+            stopwatch.Start();
+            string decryptString = AES128.Decrypt(Convert.FromBase64String(plaintext), Password);
+            stopwatch.Stop();
+            double decryptionTime = stopwatch.Elapsed.TotalSeconds;
+            return new DataEncryptionProvider(decryptString, decryptionTime);
         }
 
         private void textBoxEncryptPassword_Leave(object sender, EventArgs e)
@@ -168,29 +133,29 @@ namespace AESEncryption
             }
         }
 
-        private void textBoxEncryptedOutput_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (textBoxEncryptedOutput.Text.Length > 0)
-            {
-                byte[] InputBytes = Convert.FromBase64String(textBoxEncryptedOutput.Text);
-                textBoxDebug.Text = BitConverter.ToString(InputBytes).ToLower().Replace("-", " ");
-            }
-        }
+        //private void textBoxEncryptedOutput_MouseDoubleClick(object sender, MouseEventArgs e)
+        //{
+        //    if (textBoxEncryptedOutput.Text.Length > 0)
+        //    {
+        //        byte[] InputBytes = Convert.FromBase64String(textBoxEncryptedOutput.Text);
+        //        textBoxDebug.Text = BitConverter.ToString(InputBytes).ToLower().Replace("-", " ");
+        //    }
+        //}
 
-        private void textBoxEncrypted_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            byte[] InputBytes = Convert.FromBase64String(textBoxEncrypted.Text);
-            textBoxDebug.Text = BitConverter.ToString(InputBytes).ToLower().Replace("-", " ");
-        }
+        //private void textBoxEncrypted_MouseDoubleClick(object sender, MouseEventArgs e)
+        //{
+        //    byte[] InputBytes = Convert.FromBase64String(textBoxEncrypted.Text);
+        //    textBoxDebug.Text = BitConverter.ToString(InputBytes).ToLower().Replace("-", " ");
+        //}
 
-        private void textBoxDcryptPassword_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (textBoxDcryptPassword.Text.Length > 0)
-            {
-                byte[] InputBytes = Encoding.UTF8.GetBytes(textBoxDcryptPassword.Text);
-                textBoxDebug.Text = BitConverter.ToString(InputBytes).ToLower().Replace("-", "");
-            }
-        }
+        //private void textBoxDcryptPassword_MouseDoubleClick(object sender, MouseEventArgs e)
+        //{
+        //    if (textBoxDcryptPassword.Text.Length > 0)
+        //    {
+        //        byte[] InputBytes = Encoding.UTF8.GetBytes(textBoxDcryptPassword.Text);
+        //        textBoxDebug.Text = BitConverter.ToString(InputBytes).ToLower().Replace("-", "");
+        //    }
+        //}
 
         private void button1_Click(object sender, EventArgs e)
         {

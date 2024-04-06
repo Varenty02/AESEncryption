@@ -9,11 +9,38 @@ namespace AESEncryption.Model
     internal class AES128
     {
         private const int BlockSize = 16;
-
         public static byte[] Encrypt(string plainText, string key)
         {
             byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
             byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+
+            return EncryptFullText(plainBytes, keyBytes);
+        }
+
+        public static string Decrypt(byte[] cipherText, string key)
+        {
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+
+            byte[] decryptedBytes = DecryptFullText(cipherText, keyBytes);
+            return Encoding.UTF8.GetString(decryptedBytes);
+        }
+
+        public static byte[] EncryptFullText(byte[] plainText, byte[] key)
+        {
+            List<byte> cipherBytes = new List<byte>();
+
+            for (int i = 0; i < plainText.Length; i += BlockSize)
+            {
+                byte[] chunk = new byte[BlockSize];
+                Array.Copy(plainText, i, chunk, 0, Math.Min(BlockSize, plainText.Length - i));
+                byte[] encryptedChunk = EncryptChunk(chunk, key);
+                cipherBytes.AddRange(encryptedChunk);
+            }
+
+            return cipherBytes.ToArray();
+        }
+        private static byte[] EncryptChunk(byte[] plainBytes, byte[] keyBytes)
+        {
 
             byte[][] state = new byte[4][];
             for (int i = 0; i < 4; i++)
@@ -54,9 +81,8 @@ namespace AESEncryption.Model
             return cipherBytes;
         }
 
-        public static string Decrypt(byte[] cipherText, string key)
+        private static byte[] DecryptChunk(byte[] cipherBytes, byte[] keyBytes)
         {
-            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 
             byte[][] state = new byte[4][];
             for (int i = 0; i < 4; i++)
@@ -64,9 +90,9 @@ namespace AESEncryption.Model
                 state[i] = new byte[4];
             }
 
-            for (int i = 0; i < Math.Min(cipherText.Length, BlockSize); i++)
+            for (int i = 0; i < Math.Min(cipherBytes.Length, BlockSize); i++)
             {
-                state[i % 4][i / 4] = cipherText[i];
+                state[i % 4][i / 4] = cipherBytes[i];
             }
 
             byte[][] w = KeyExpansion(keyBytes);
@@ -94,8 +120,109 @@ namespace AESEncryption.Model
                 }
             }
 
-            return Encoding.UTF8.GetString(plainBytes);
+            return plainBytes;
         }
+        public static byte[] DecryptFullText(byte[] cipherText, byte[] key)
+        {
+            List<byte> decryptedBytes = new List<byte>();
+
+            for (int i = 0; i < cipherText.Length; i += BlockSize)
+            {
+                byte[] chunk = new byte[BlockSize];
+                Array.Copy(cipherText, i, chunk, 0, Math.Min(BlockSize, cipherText.Length - i));
+                byte[] decryptedChunk = DecryptChunk(chunk, key);
+
+                decryptedBytes.AddRange(decryptedChunk);
+            }
+
+            return decryptedBytes.ToArray();
+        }
+        //public static byte[] Encrypt(string plainText, string key)
+        //{
+        //    byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+        //    byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+
+        //    byte[][] state = new byte[4][];
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        state[i] = new byte[4];
+        //    }
+
+        //    for (int i = 0; i < Math.Min(plainBytes.Length, BlockSize); i++)
+        //    {
+        //        state[i % 4][i / 4] = plainBytes[i];
+        //    }
+
+        //    byte[][] w = KeyExpansion(keyBytes);
+
+        //    AddRoundKey(state, w, 0);
+
+        //    for (int round = 1; round < 10; round++)
+        //    {
+        //        SubBytes(state);
+        //        ShiftRows(state);
+        //        MixColumns(state);
+        //        AddRoundKey(state, w, round);
+        //    }
+
+        //    SubBytes(state);
+        //    ShiftRows(state);
+        //    AddRoundKey(state, w, 10);
+
+        //    byte[] cipherBytes = new byte[BlockSize];
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        for (int j = 0; j < 4; j++)
+        //        {
+        //            cipherBytes[i * 4 + j] = state[j][i];
+        //        }
+        //    }
+
+        //    return cipherBytes;
+        //}
+
+        //public static string Decrypt(byte[] cipherText, string key)
+        //{
+        //    byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+
+        //    byte[][] state = new byte[4][];
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        state[i] = new byte[4];
+        //    }
+
+        //    for (int i = 0; i < Math.Min(cipherText.Length, BlockSize); i++)
+        //    {
+        //        state[i % 4][i / 4] = cipherText[i];
+        //    }
+
+        //    byte[][] w = KeyExpansion(keyBytes);
+
+        //    AddRoundKey(state, w, 10);
+
+        //    for (int round = 9; round > 0; round--)
+        //    {
+        //        InvShiftRows(state);
+        //        InvSubBytes(state);
+        //        AddRoundKey(state, w, round);
+        //        InvMixColumns(state);
+        //    }
+
+        //    InvShiftRows(state);
+        //    InvSubBytes(state);
+        //    AddRoundKey(state, w, 0);
+
+        //    byte[] plainBytes = new byte[BlockSize];
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        for (int j = 0; j < 4; j++)
+        //        {
+        //            plainBytes[i * 4 + j] = state[j][i];
+        //        }
+        //    }
+
+        //    return Encoding.UTF8.GetString(plainBytes);
+        //}
 
         private static void SubBytes(byte[][] state)
         {
