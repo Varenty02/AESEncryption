@@ -83,23 +83,63 @@ namespace AESEncryption
         private DataEncryptionProvider Encrypt(string plainText, string Password)
         {
             Stopwatch stopwatch = new Stopwatch();
+            var keySize = int.Parse(cbAesKeySize.Text);
+            if (keySize == 128)
+            {
 
-            stopwatch.Start();
-            string encryptString = Convert.ToBase64String(AES.Encrypt(plainText, Password));
-            stopwatch.Stop();
-            double encryptionTime = stopwatch.Elapsed.TotalSeconds;
-            return new DataEncryptionProvider(encryptString, encryptionTime);
+                stopwatch.Start();
+                string encryptString = Convert.ToBase64String(AES128.Encrypt(plainText, Password));
+                stopwatch.Stop();
+                double encryptionTime = stopwatch.Elapsed.TotalSeconds;
+                return new DataEncryptionProvider(encryptString, encryptionTime);
+            }
+            else if (keySize == 192)
+            {
+                stopwatch.Start();
+                string encryptString = Convert.ToBase64String(AES192.Encrypt(plainText, Password));
+                stopwatch.Stop();
+                double encryptionTime = stopwatch.Elapsed.TotalSeconds;
+                return new DataEncryptionProvider(encryptString, encryptionTime);
+            }
+            else
+            {
+                stopwatch.Start();
+                string encryptString = Convert.ToBase64String(AES256.Encrypt(plainText, Password));
+                stopwatch.Stop();
+                double encryptionTime = stopwatch.Elapsed.TotalSeconds;
+                return new DataEncryptionProvider(encryptString, encryptionTime);
+            }
         }
 
         private DataEncryptionProvider Decrypt(string plaintext, string Password)
         {
             Stopwatch stopwatch = new Stopwatch();
 
-            stopwatch.Start();
-            string decryptString = AES.Decrypt(Convert.FromBase64String(plaintext), Password);
-            stopwatch.Stop();
-            double decryptionTime = stopwatch.Elapsed.TotalSeconds;
-            return new DataEncryptionProvider(decryptString, decryptionTime);
+            var keySize = int.Parse(cbAesKeySize.Text);
+            if (keySize == 128)
+            {
+                stopwatch.Start();
+                string decryptString = AES128.Decrypt(Convert.FromBase64String(plaintext), Password);
+                stopwatch.Stop();
+                double decryptionTime = stopwatch.Elapsed.TotalSeconds;
+                return new DataEncryptionProvider(decryptString, decryptionTime);
+            }
+            else if (keySize == 192)
+            {
+                stopwatch.Start();
+                string decryptString = AES192.Decrypt(Convert.FromBase64String(plaintext), Password);
+                stopwatch.Stop();
+                double decryptionTime = stopwatch.Elapsed.TotalSeconds;
+                return new DataEncryptionProvider(decryptString, decryptionTime);
+            }
+            else
+            {
+                stopwatch.Start();
+                string decryptString = AES256.Decrypt(Convert.FromBase64String(plaintext), Password);
+                stopwatch.Stop();
+                double decryptionTime = stopwatch.Elapsed.TotalSeconds;
+                return new DataEncryptionProvider(decryptString, decryptionTime);
+            }
         }
 
         private void textBoxEncryptPassword_Leave(object sender, EventArgs e)
@@ -253,6 +293,11 @@ namespace AESEncryption
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxDecryptOutput_TextChanged(object sender, EventArgs e)
         {
 
         }

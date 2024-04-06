@@ -35,9 +35,12 @@ namespace AESEncryption
             label2 = new System.Windows.Forms.Label();
             textBoxEncryptPassword = new System.Windows.Forms.TextBox();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            cbAesKeySize = new System.Windows.Forms.ComboBox();
+            textTimeEncrypt = new System.Windows.Forms.TextBox();
             button2 = new System.Windows.Forms.Button();
             button1 = new System.Windows.Forms.Button();
             groupBox2 = new System.Windows.Forms.GroupBox();
+            textTimeDecrypt = new System.Windows.Forms.TextBox();
             button4 = new System.Windows.Forms.Button();
             button3 = new System.Windows.Forms.Button();
             label3 = new System.Windows.Forms.Label();
@@ -54,8 +57,6 @@ namespace AESEncryption
             textBoxDebug = new System.Windows.Forms.TextBox();
             openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             button5 = new System.Windows.Forms.Button();
-            textTimeEncrypt = new System.Windows.Forms.TextBox();
-            textTimeDecrypt = new System.Windows.Forms.TextBox();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -106,7 +107,7 @@ namespace AESEncryption
             // 
             textBoxEncryptPassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             textBoxEncryptPassword.Location = new System.Drawing.Point(8, 115);
-            textBoxEncryptPassword.MaxLength = 16;
+            textBoxEncryptPassword.MaxLength = 32;
             textBoxEncryptPassword.Name = "textBoxEncryptPassword";
             textBoxEncryptPassword.Size = new System.Drawing.Size(390, 27);
             textBoxEncryptPassword.TabIndex = 3;
@@ -116,6 +117,7 @@ namespace AESEncryption
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(cbAesKeySize);
             groupBox1.Controls.Add(textTimeEncrypt);
             groupBox1.Controls.Add(button2);
             groupBox1.Controls.Add(button1);
@@ -130,6 +132,24 @@ namespace AESEncryption
             groupBox1.TabIndex = 5;
             groupBox1.TabStop = false;
             groupBox1.Text = "Encryption";
+            // 
+            // cbAesKeySize
+            // 
+            cbAesKeySize.FormattingEnabled = true;
+            cbAesKeySize.Items.AddRange(new object[] { "128", "192", "256" });
+            cbAesKeySize.Location = new System.Drawing.Point(404, 114);
+            cbAesKeySize.Name = "cbAesKeySize";
+            cbAesKeySize.Size = new System.Drawing.Size(127, 28);
+            cbAesKeySize.TabIndex = 8;
+            // 
+            // textTimeEncrypt
+            // 
+            textTimeEncrypt.Location = new System.Drawing.Point(568, 179);
+            textTimeEncrypt.Name = "textTimeEncrypt";
+            textTimeEncrypt.ReadOnly = true;
+            textTimeEncrypt.Size = new System.Drawing.Size(189, 27);
+            textTimeEncrypt.TabIndex = 7;
+            textTimeEncrypt.TextChanged += textBox1_TextChanged;
             // 
             // button2
             // 
@@ -170,6 +190,14 @@ namespace AESEncryption
             groupBox2.TabStop = false;
             groupBox2.Text = "Decryption";
             // 
+            // textTimeDecrypt
+            // 
+            textTimeDecrypt.Location = new System.Drawing.Point(568, 184);
+            textTimeDecrypt.Name = "textTimeDecrypt";
+            textTimeDecrypt.ReadOnly = true;
+            textTimeDecrypt.Size = new System.Drawing.Size(189, 27);
+            textTimeDecrypt.TabIndex = 8;
+            // 
             // button4
             // 
             button4.Location = new System.Drawing.Point(568, 116);
@@ -206,7 +234,7 @@ namespace AESEncryption
             // 
             textBoxDcryptPassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             textBoxDcryptPassword.Location = new System.Drawing.Point(8, 117);
-            textBoxDcryptPassword.MaxLength = 16;
+            textBoxDcryptPassword.MaxLength = 32;
             textBoxDcryptPassword.Name = "textBoxDcryptPassword";
             textBoxDcryptPassword.Size = new System.Drawing.Size(390, 27);
             textBoxDcryptPassword.TabIndex = 3;
@@ -294,6 +322,7 @@ namespace AESEncryption
             textBoxDecryptOutput.ReadOnly = true;
             textBoxDecryptOutput.Size = new System.Drawing.Size(522, 27);
             textBoxDecryptOutput.TabIndex = 11;
+            textBoxDecryptOutput.TextChanged += textBoxDecryptOutput_TextChanged;
             // 
             // groupBox3
             // 
@@ -327,23 +356,6 @@ namespace AESEncryption
             button5.Text = "Clear";
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click;
-            // 
-            // textTimeEncrypt
-            // 
-            textTimeEncrypt.Location = new System.Drawing.Point(568, 179);
-            textTimeEncrypt.Name = "textTimeEncrypt";
-            textTimeEncrypt.ReadOnly = true;
-            textTimeEncrypt.Size = new System.Drawing.Size(189, 27);
-            textTimeEncrypt.TabIndex = 7;
-            textTimeEncrypt.TextChanged += textBox1_TextChanged;
-            // 
-            // textTimeDecrypt
-            // 
-            textTimeDecrypt.Location = new System.Drawing.Point(568, 184);
-            textTimeDecrypt.Name = "textTimeDecrypt";
-            textTimeDecrypt.ReadOnly = true;
-            textTimeDecrypt.Size = new System.Drawing.Size(189, 27);
-            textTimeDecrypt.TabIndex = 8;
             // 
             // Form1
             // 
@@ -404,6 +416,7 @@ namespace AESEncryption
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TextBox textTimeEncrypt;
         private System.Windows.Forms.TextBox textTimeDecrypt;
+        private System.Windows.Forms.ComboBox cbAesKeySize;
     }
 }
 

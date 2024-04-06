@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Linq;
 namespace AESEncryption.Model
 {
-    internal class AES
+    internal class AES192
     {
         private const int BlockSize = 16;
 
         public static byte[] Encrypt(string plainText, string key)
         {
+            if (key.Length != BlockSize)
+            {
+                throw new ArgumentException("Key length must be 24 bytes.");
+            }
+
             byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
-            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 
             byte[][] state = new byte[4][];
             for (int i = 0; i < 4; i++)
@@ -26,21 +30,22 @@ namespace AESEncryption.Model
                 state[i % 4][i / 4] = plainBytes[i];
             }
 
-            byte[][] w = KeyExpansion(keyBytes);
+            byte[][] w = KeyExpansion192(Encoding.UTF8.GetBytes(key));
 
             AddRoundKey(state, w, 0);
-
-            for (int round = 1; round < 10; round++)
+            //128,192,256=>10,12,14
+            //số vòng phụ thuộc vào độ dài khóa 192=>12 vòng -1=11 vòng
+            for (int round = 1; round < 12; round++)
             {
                 SubBytes(state);
                 ShiftRows(state);
                 MixColumns(state);
                 AddRoundKey(state, w, round);
             }
-
+            //vòng cuối cùng
             SubBytes(state);
             ShiftRows(state);
-            AddRoundKey(state, w, 10);
+            AddRoundKey(state, w, 12);
 
             byte[] cipherBytes = new byte[BlockSize];
             for (int i = 0; i < 4; i++)
@@ -56,7 +61,10 @@ namespace AESEncryption.Model
 
         public static string Decrypt(byte[] cipherText, string key)
         {
-            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+            if (key.Length != BlockSize)
+            {
+                throw new ArgumentException("Key length must be 24 bytes.");
+            }
 
             byte[][] state = new byte[4][];
             for (int i = 0; i < 4; i++)
@@ -69,11 +77,11 @@ namespace AESEncryption.Model
                 state[i % 4][i / 4] = cipherText[i];
             }
 
-            byte[][] w = KeyExpansion(keyBytes);
+            byte[][] w = KeyExpansion192(Encoding.UTF8.GetBytes(key));
 
-            AddRoundKey(state, w, 10);
+            AddRoundKey(state, w, 12);
 
-            for (int round = 9; round > 0; round--)
+            for (int round = 11; round > 0; round--)
             {
                 InvShiftRows(state);
                 InvSubBytes(state);
@@ -94,9 +102,58 @@ namespace AESEncryption.Model
                 }
             }
 
-            return Encoding.UTF8.GetString(plainBytes);
+            return Encoding.UTF8.GetString(plainBytes).TrimEnd('\0');
+        }
+        //Mở rộng khóa con trong các bước lặp
+        private static byte[][] KeyExpansion192(byte[] key)
+        {
+            //Số từ trong 1 khóa
+            int Nk = key.Length / 4;
+            if (Nk != 6)
+            {
+                throw new ArgumentException("Key length must be 24 bytes.");
+            }
+            //Số vòng lặp khóa
+            int Nr = Nk + 6;//=12
+            //Số byte mỗi block
+            int Nb = 4;
+            //mảng 2 chiều lưu khóa mở rộng
+            byte[][] w = new byte[Nb * (Nr + 1)][];
+
+            for (int i = 0; i < Nk; i++)
+            {
+                //bê 1 cột từ bảng khóa sang bảng khóa mở rộng mới
+                byte[] temp = new byte[] { key[4 * i], key[4 * i + 1], key[4 * i + 2], key[4 * i + 3] };
+                w[i] = temp;
+            }
+            //i=6->52
+            for (int i = Nk; i < Nb * (Nr + 1); i++)
+            {
+                byte[] temp = new byte[4];
+                Array.Copy(w[i - 1], temp, 4);
+                if (i % Nk == 0)
+                {
+                    byte[] rotated = RotWord(temp);
+                    byte[] subbed = SubWord(rotated);
+                    byte rcon = Rcon[i / Nk];
+                    subbed[0] ^= rcon;
+                    temp = subbed;
+                }
+                else if (Nk > 6 && i % Nk == 4)
+                {
+                    temp = SubWord(temp);
+                }
+                for (int j = 0; j < 4; j++)
+                {
+                    temp[j] ^= w[i - Nk][j];
+                }
+                w[i] = temp;
+            }
+
+            return w;
         }
 
+        //Thay thế các byte dữ liệu trạng thái bằng cách sử dụng 1 hộp bảng thế Sbox ,thay thế các ký tự trong bảng ban đầu
         private static void SubBytes(byte[][] state)
         {
             for (int i = 0; i < 4; i++)
@@ -118,7 +175,7 @@ namespace AESEncryption.Model
                 }
             }
         }
-
+        //Dịch vòng dữ liệu trạng thái bằng cách dịch vòng 3 hàng cuối của mảng vơi số lần dịch khác nhau
         private static void ShiftRows(byte[][] state)
         {
             for (int i = 1; i < 4; i++)
@@ -128,6 +185,7 @@ namespace AESEncryption.Model
                     byte temp = state[i][0];
                     for (int k = 0; k < 3; k++)
                     {
+                        //dịch trái
                         state[i][k] = state[i][k + 1];
                     }
                     state[i][3] = temp;
@@ -150,7 +208,7 @@ namespace AESEncryption.Model
                 }
             }
         }
-
+        //Trộn cột dữ liệu trạng thái vào bằng cách nhân từng cột với đa thức
         private static void MixColumns(byte[][] state)
         {
             byte[][] temp = new byte[4][];
@@ -188,9 +246,10 @@ namespace AESEncryption.Model
 
             Array.Copy(temp, state, 4);
         }
-
+        //Chèn khóa vòng bằng cách cộng mảng trạng thái bằng phép XOR
         private static void AddRoundKey(byte[][] state, byte[][] w, int round)
         {
+            //Lấy từng khối trong roundkey XOR với khối mã
             for (int i = 0; i < 4; i++)
             {
                 for (int j = 0; j < 4; j++)
@@ -220,47 +279,7 @@ namespace AESEncryption.Model
             }
             return result;
         }
-
-        private static byte[][] KeyExpansion(byte[] key)
-        {
-            int Nk = key.Length / 4;
-            int Nr = Nk + 6;
-            int Nb = 4;
-
-            byte[][] w = new byte[Nb * (Nr + 1)][];
-
-            for (int i = 0; i < Nk; i++)
-            {
-                byte[] temp = new byte[] { key[4 * i], key[4 * i + 1], key[4 * i + 2], key[4 * i + 3] };
-                w[i] = temp;
-            }
-
-            for (int i = Nk; i < Nb * (Nr + 1); i++)
-            {
-                byte[] temp = new byte[4];
-                Array.Copy(w[i - 1], temp, 4);
-                if (i % Nk == 0)
-                {
-                    byte[] rotated = RotWord(temp);
-                    byte[] subbed = SubWord(rotated);
-                    byte rcon = Rcon[i / Nk];
-                    subbed[0] ^= rcon;
-                    temp = subbed;
-                }
-                else if (Nk > 6 && i % Nk == 4)
-                {
-                    temp = SubWord(temp);
-                }
-                for (int j = 0; j < 4; j++)
-                {
-                    temp[j] ^= w[i - Nk][j];
-                }
-                w[i] = temp;
-            }
-
-            return w;
-        }
-
+        //  hoán vị vòng
         private static byte[] RotWord(byte[] word)
         {
             byte temp = word[0];
@@ -271,7 +290,7 @@ namespace AESEncryption.Model
             word[3] = temp;
             return word;
         }
-
+        //Giống với subbyte,biến đổi 4 byte đầu vào thành 4 byte đầu ra sử dụng sbox
         private static byte[] SubWord(byte[] word)
         {
             byte[] result = new byte[4];
@@ -281,8 +300,9 @@ namespace AESEncryption.Model
             }
             return result;
         }
+        //Rcon mảng chứa hằng
         private static readonly byte[] Rcon = {
-        0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36
+        0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36,0x6C, 0xD8
         };
         // S-Box
         private static readonly byte[] SBox = {
