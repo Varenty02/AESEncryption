@@ -12,6 +12,8 @@ using System.IO;
 using System.Net.Http;
 using AESEncryption.Model;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using TextBox = System.Windows.Forms.TextBox;
 
 namespace AESEncryption
 {
@@ -20,6 +22,7 @@ namespace AESEncryption
         public Form1()
         {
             InitializeComponent();
+            cbAesKeySize.SelectedIndex = 0;
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -84,14 +87,14 @@ namespace AESEncryption
         {
             Stopwatch stopwatch = new Stopwatch();
             var keySize = int.Parse(cbAesKeySize.Text);
-            
+
 
             stopwatch.Start();
             string encryptString = Convert.ToBase64String(AES128.Encrypt(plainText, Password));
             stopwatch.Stop();
             double encryptionTime = stopwatch.Elapsed.TotalSeconds;
             return new DataEncryptionProvider(encryptString, encryptionTime);
-            
+
         }
 
         private DataEncryptionProvider Decrypt(string plaintext, string Password)
@@ -99,7 +102,7 @@ namespace AESEncryption
             Stopwatch stopwatch = new Stopwatch();
 
             var keySize = int.Parse(cbAesKeySize.Text);
-           
+
             stopwatch.Start();
             string decryptString = AES128.Decrypt(Convert.FromBase64String(plaintext), Password);
             stopwatch.Stop();
@@ -109,10 +112,7 @@ namespace AESEncryption
 
         private void textBoxEncryptPassword_Leave(object sender, EventArgs e)
         {
-            if (((TextBox)sender).Text.Length != 16)
-            {
-                MessageBox.Show("You need to write at least 16 characters.");
-            }
+           
         }
 
         private void textBoxInput_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -185,7 +185,18 @@ namespace AESEncryption
             string randomString = "";
 
             int length = 16;
-
+            int keySize=int.Parse(cbAesKeySize.Text);
+            if (keySize == 128)
+            {
+                length = 16;
+            }else if (keySize == 192)
+            {
+                length = 24;
+            }
+            else
+            {
+                length = 32;
+            }
             string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
             for (int i = 0; i < length; i++)
@@ -265,6 +276,26 @@ namespace AESEncryption
         private void textBoxDecryptOutput_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void cbAesKeySize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int keySize=int.Parse(cbAesKeySize.Text);
+            if(keySize == 128)
+            {
+                label2.Text = "Provide password to use for encryption (16 chars)";
+                textBoxEncryptPassword.MaxLength = 16;
+            }else if(keySize == 192) 
+            {
+                label2.Text = "Provide password to use for encryption (24 chars)";
+                textBoxEncryptPassword.MaxLength = 24;
+            }
+            else
+            {
+                label2.Text = "Provide password to use for encryption (32 chars)";
+                textBoxEncryptPassword.MaxLength = 32;
+            }
+            
         }
     }
 }

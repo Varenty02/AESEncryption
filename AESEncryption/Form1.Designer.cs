@@ -53,10 +53,10 @@ namespace AESEncryption
             textBoxEncryptedOutput = new System.Windows.Forms.TextBox();
             label6 = new System.Windows.Forms.Label();
             textBoxDecryptOutput = new System.Windows.Forms.TextBox();
-            groupBox3 = new System.Windows.Forms.GroupBox();
-            textBoxDebug = new System.Windows.Forms.TextBox();
             openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             button5 = new System.Windows.Forms.Button();
+            textBoxDebug = new System.Windows.Forms.TextBox();
+            groupBox3 = new System.Windows.Forms.GroupBox();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -141,6 +141,7 @@ namespace AESEncryption
             cbAesKeySize.Name = "cbAesKeySize";
             cbAesKeySize.Size = new System.Drawing.Size(127, 28);
             cbAesKeySize.TabIndex = 8;
+            cbAesKeySize.SelectedIndexChanged += cbAesKeySize_SelectedIndexChanged;
             // 
             // textTimeEncrypt
             // 
@@ -239,7 +240,6 @@ namespace AESEncryption
             textBoxDcryptPassword.Size = new System.Drawing.Size(390, 27);
             textBoxDcryptPassword.TabIndex = 3;
             textBoxDcryptPassword.TextChanged += textBoxDcryptPassword_TextChanged;
-            //textBoxDcryptPassword.MouseDoubleClick += textBoxDcryptPassword_MouseDoubleClick;
             // 
             // label4
             // 
@@ -259,7 +259,6 @@ namespace AESEncryption
             textBoxEncrypted.Size = new System.Drawing.Size(523, 27);
             textBoxEncrypted.TabIndex = 0;
             textBoxEncrypted.TextChanged += textBoxEncrypted_TextChanged;
-            //textBoxEncrypted.MouseDoubleClick += textBoxEncrypted_MouseDoubleClick;
             // 
             // buttonDecrypt
             // 
@@ -303,7 +302,6 @@ namespace AESEncryption
             textBoxEncryptedOutput.Size = new System.Drawing.Size(521, 27);
             textBoxEncryptedOutput.TabIndex = 9;
             textBoxEncryptedOutput.TextChanged += textBoxEncryptedOutput_TextChanged;
-            //textBoxEncryptedOutput.MouseDoubleClick += textBoxEncryptedOutput_MouseDoubleClick;
             // 
             // label6
             // 
@@ -324,24 +322,6 @@ namespace AESEncryption
             textBoxDecryptOutput.TabIndex = 11;
             textBoxDecryptOutput.TextChanged += textBoxDecryptOutput_TextChanged;
             // 
-            // groupBox3
-            // 
-            groupBox3.Controls.Add(textBoxDebug);
-            groupBox3.Location = new System.Drawing.Point(13, 600);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(775, 77);
-            groupBox3.TabIndex = 13;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "Double click inside any field above to see its value in bytes";
-            // 
-            // textBoxDebug
-            // 
-            textBoxDebug.Location = new System.Drawing.Point(10, 35);
-            textBoxDebug.Name = "textBoxDebug";
-            textBoxDebug.ReadOnly = true;
-            textBoxDebug.Size = new System.Drawing.Size(747, 27);
-            textBoxDebug.TabIndex = 0;
-            // 
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
@@ -356,6 +336,24 @@ namespace AESEncryption
             button5.Text = "Clear";
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click;
+            // 
+            // textBoxDebug
+            // 
+            textBoxDebug.Location = new System.Drawing.Point(10, 35);
+            textBoxDebug.Name = "textBoxDebug";
+            textBoxDebug.ReadOnly = true;
+            textBoxDebug.Size = new System.Drawing.Size(747, 27);
+            textBoxDebug.TabIndex = 0;
+            // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(textBoxDebug);
+            groupBox3.Location = new System.Drawing.Point(13, 600);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new System.Drawing.Size(775, 77);
+            groupBox3.TabIndex = 13;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "Double click inside any field above to see its value in bytes";
             // 
             // Form1
             // 
@@ -406,8 +404,6 @@ namespace AESEncryption
         private System.Windows.Forms.TextBox textBoxEncryptedOutput;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxDecryptOutput;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.TextBox textBoxDebug;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button button2;
@@ -417,6 +413,8 @@ namespace AESEncryption
         private System.Windows.Forms.TextBox textTimeEncrypt;
         private System.Windows.Forms.TextBox textTimeDecrypt;
         private System.Windows.Forms.ComboBox cbAesKeySize;
+        private System.Windows.Forms.TextBox textBoxDebug;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }
 
