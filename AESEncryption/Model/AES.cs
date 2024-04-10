@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AESEncryption.Model
 {
-    internal class AES128
+    internal class AES
     {
         private const int BlockSize = 16;
         public static byte[] Encrypt(string plainText, string key)
@@ -56,8 +57,9 @@ namespace AESEncryption.Model
             byte[][] w = KeyExpansion(keyBytes);
 
             AddRoundKey(state, w, 0);
+            var Nr=keyBytes.Length / 4 + 6;
 
-            for (int round = 1; round < 10; round++)
+            for (int round = 1; round < Nr; round++)
             {
                 SubBytes(state);
                 ShiftRows(state);
@@ -67,7 +69,7 @@ namespace AESEncryption.Model
 
             SubBytes(state);
             ShiftRows(state);
-            AddRoundKey(state, w, 10);
+            AddRoundKey(state, w, Nr);
 
             byte[] cipherBytes = new byte[BlockSize];
             for (int i = 0; i < 4; i++)
@@ -96,10 +98,10 @@ namespace AESEncryption.Model
             }
 
             byte[][] w = KeyExpansion(keyBytes);
+            var Nr = keyBytes.Length / 4 + 6;
+            AddRoundKey(state, w, Nr);
 
-            AddRoundKey(state, w, 10);
-
-            for (int round = 9; round > 0; round--)
+            for (int round = Nr-1; round > 0; round--)
             {
                 InvShiftRows(state);
                 InvSubBytes(state);
@@ -326,11 +328,14 @@ namespace AESEncryption.Model
                 }
             }
         }
-
+        //Phép nhân byte đa thức  trong trường galois
         private static byte Multiply(byte a, byte b)
         {
+            //Khởi tạo biến result để lưu kết quả của phép nhân, ban đầu được gán giá trị là 0.
             byte result = 0;
+            //Khởi tạo biến highBit để lưu giá trị bit cao nhất của byte a, ban đầu được gán giá trị là 0.
             byte highBit = 0;
+            //Vòng lặp để lặp qua 8 bit của byte b, từ bit thấp nhất đến bit cao nhất.
             for (int i = 0; i < 8; i++)
             {
                 if ((b & 1) == 1)
@@ -339,15 +344,18 @@ namespace AESEncryption.Model
                 }
                 highBit = (byte)(a & 0x80);
                 a <<= 1;
+                //Gán bit cao nhất của a vào highBit bằng cách AND a với 0x80(10000000b),
+                //mục đích là để kiểm tra xem bit cao nhất của a có bằng 1 hay không.
                 if (highBit == 0x80)
                 {
                     a ^= 0x1B;
                 }
+                //Dịch phải b một bit để kiểm tra bit tiếp theo trong vòng lặp.
                 b >>= 1;
             }
             return result;
         }
-
+        //Nk là số lượng từ trong khóa, Nr là số lượng vòng lặp, Nb là số cột trong một khối dữ liệu (block).
         private static byte[][] KeyExpansion(byte[] key)
         {
             int Nk = key.Length / 4;

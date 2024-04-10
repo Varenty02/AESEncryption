@@ -15,6 +15,7 @@ namespace AESEncryption.Model
         {
             StringEncryptOrDecrypt = stringEncryptOrDecrypt;
             DecrypEncryptTime = decrypEncryptTime;
+            
         }
     }
 }

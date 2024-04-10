@@ -35,6 +35,8 @@ namespace AESEncryption
             label2 = new System.Windows.Forms.Label();
             textBoxEncryptPassword = new System.Windows.Forms.TextBox();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            btnSaveKey = new System.Windows.Forms.Button();
+            btnSave = new System.Windows.Forms.Button();
             cbAesKeySize = new System.Windows.Forms.ComboBox();
             textTimeEncrypt = new System.Windows.Forms.TextBox();
             button2 = new System.Windows.Forms.Button();
@@ -55,11 +57,8 @@ namespace AESEncryption
             textBoxDecryptOutput = new System.Windows.Forms.TextBox();
             openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             button5 = new System.Windows.Forms.Button();
-            textBoxDebug = new System.Windows.Forms.TextBox();
-            groupBox3 = new System.Windows.Forms.GroupBox();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
-            groupBox3.SuspendLayout();
             SuspendLayout();
             // 
             // textBoxInput
@@ -117,6 +116,8 @@ namespace AESEncryption
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(btnSaveKey);
+            groupBox1.Controls.Add(btnSave);
             groupBox1.Controls.Add(cbAesKeySize);
             groupBox1.Controls.Add(textTimeEncrypt);
             groupBox1.Controls.Add(button2);
@@ -133,6 +134,26 @@ namespace AESEncryption
             groupBox1.TabStop = false;
             groupBox1.Text = "Encryption";
             // 
+            // btnSaveKey
+            // 
+            btnSaveKey.Location = new System.Drawing.Point(702, 112);
+            btnSaveKey.Name = "btnSaveKey";
+            btnSaveKey.Size = new System.Drawing.Size(73, 29);
+            btnSaveKey.TabIndex = 10;
+            btnSaveKey.Text = "Save";
+            btnSaveKey.UseVisualStyleBackColor = true;
+            btnSaveKey.Click += btnSaveKey_Click;
+            // 
+            // btnSave
+            // 
+            btnSave.Location = new System.Drawing.Point(702, 177);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(73, 29);
+            btnSave.TabIndex = 9;
+            btnSave.Text = "Save";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += button6_Click;
+            // 
             // cbAesKeySize
             // 
             cbAesKeySize.FormattingEnabled = true;
@@ -148,7 +169,7 @@ namespace AESEncryption
             textTimeEncrypt.Location = new System.Drawing.Point(568, 179);
             textTimeEncrypt.Name = "textTimeEncrypt";
             textTimeEncrypt.ReadOnly = true;
-            textTimeEncrypt.Size = new System.Drawing.Size(189, 27);
+            textTimeEncrypt.Size = new System.Drawing.Size(128, 27);
             textTimeEncrypt.TabIndex = 7;
             textTimeEncrypt.TextChanged += textBox1_TextChanged;
             // 
@@ -196,7 +217,7 @@ namespace AESEncryption
             textTimeDecrypt.Location = new System.Drawing.Point(568, 184);
             textTimeDecrypt.Name = "textTimeDecrypt";
             textTimeDecrypt.ReadOnly = true;
-            textTimeDecrypt.Size = new System.Drawing.Size(189, 27);
+            textTimeDecrypt.Size = new System.Drawing.Size(128, 27);
             textTimeDecrypt.TabIndex = 8;
             // 
             // button4
@@ -337,31 +358,12 @@ namespace AESEncryption
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click;
             // 
-            // textBoxDebug
-            // 
-            textBoxDebug.Location = new System.Drawing.Point(10, 35);
-            textBoxDebug.Name = "textBoxDebug";
-            textBoxDebug.ReadOnly = true;
-            textBoxDebug.Size = new System.Drawing.Size(747, 27);
-            textBoxDebug.TabIndex = 0;
-            // 
-            // groupBox3
-            // 
-            groupBox3.Controls.Add(textBoxDebug);
-            groupBox3.Location = new System.Drawing.Point(13, 600);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(775, 77);
-            groupBox3.TabIndex = 13;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "Double click inside any field above to see its value in bytes";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 691);
+            ClientSize = new System.Drawing.Size(800, 598);
             Controls.Add(button5);
-            Controls.Add(groupBox3);
             Controls.Add(label6);
             Controls.Add(textBoxDecryptOutput);
             Controls.Add(label5);
@@ -379,8 +381,6 @@ namespace AESEncryption
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
-            groupBox3.ResumeLayout(false);
-            groupBox3.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -413,8 +413,8 @@ namespace AESEncryption
         private System.Windows.Forms.TextBox textTimeEncrypt;
         private System.Windows.Forms.TextBox textTimeDecrypt;
         private System.Windows.Forms.ComboBox cbAesKeySize;
-        private System.Windows.Forms.TextBox textBoxDebug;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnSaveKey;
     }
 }
 

@@ -90,7 +90,7 @@ namespace AESEncryption
 
 
             stopwatch.Start();
-            string encryptString = Convert.ToBase64String(AES128.Encrypt(plainText, Password));
+            string encryptString = Convert.ToBase64String(AES.Encrypt(plainText, Password));
             stopwatch.Stop();
             double encryptionTime = stopwatch.Elapsed.TotalSeconds;
             return new DataEncryptionProvider(encryptString, encryptionTime);
@@ -104,7 +104,7 @@ namespace AESEncryption
             var keySize = int.Parse(cbAesKeySize.Text);
 
             stopwatch.Start();
-            string decryptString = AES128.Decrypt(Convert.FromBase64String(plaintext), Password);
+            string decryptString = AES.Decrypt(Convert.FromBase64String(plaintext), Password);
             stopwatch.Stop();
             double decryptionTime = stopwatch.Elapsed.TotalSeconds;
             return new DataEncryptionProvider(decryptString, decryptionTime);
@@ -112,7 +112,7 @@ namespace AESEncryption
 
         private void textBoxEncryptPassword_Leave(object sender, EventArgs e)
         {
-           
+
         }
 
         private void textBoxInput_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -120,7 +120,6 @@ namespace AESEncryption
             if (textBoxInput.Text.Length > 0)
             {
                 byte[] InputBytes = Encoding.UTF8.GetBytes(textBoxInput.Text);
-                textBoxDebug.Text = BitConverter.ToString(InputBytes).ToLower().Replace("-", " ");
             }
         }
 
@@ -129,7 +128,6 @@ namespace AESEncryption
             if (textBoxEncryptPassword.Text.Length > 0)
             {
                 byte[] InputBytes = Encoding.UTF8.GetBytes(textBoxEncryptPassword.Text);
-                textBoxDebug.Text = BitConverter.ToString(InputBytes).ToLower().Replace("-", " ");
             }
         }
 
@@ -185,11 +183,12 @@ namespace AESEncryption
             string randomString = "";
 
             int length = 16;
-            int keySize=int.Parse(cbAesKeySize.Text);
+            int keySize = int.Parse(cbAesKeySize.Text);
             if (keySize == 128)
             {
                 length = 16;
-            }else if (keySize == 192)
+            }
+            else if (keySize == 192)
             {
                 length = 24;
             }
@@ -280,12 +279,13 @@ namespace AESEncryption
 
         private void cbAesKeySize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int keySize=int.Parse(cbAesKeySize.Text);
-            if(keySize == 128)
+            int keySize = int.Parse(cbAesKeySize.Text);
+            if (keySize == 128)
             {
                 label2.Text = "Provide password to use for encryption (16 chars)";
                 textBoxEncryptPassword.MaxLength = 16;
-            }else if(keySize == 192) 
+            }
+            else if (keySize == 192)
             {
                 label2.Text = "Provide password to use for encryption (24 chars)";
                 textBoxEncryptPassword.MaxLength = 24;
@@ -295,7 +295,47 @@ namespace AESEncryption
                 label2.Text = "Provide password to use for encryption (32 chars)";
                 textBoxEncryptPassword.MaxLength = 32;
             }
-            
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog();
+            if (openFile.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(openFile.FileName))
+                    {
+                        sw.Write(textBoxEncryptedOutput.Text);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+            };
+        }
+
+        private void btnSaveKey_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog();
+            if (openFile.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(openFile.FileName))
+                    {
+                        sw.Write(textBoxEncryptPassword.Text);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+            };
         }
     }
 }
